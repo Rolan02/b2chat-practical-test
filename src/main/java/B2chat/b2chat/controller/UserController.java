@@ -1,5 +1,5 @@
 package B2chat.b2chat.controller;
-import B2chat.b2chat.Utils;
+import B2chat.b2chat.utils.Utils;
 import B2chat.b2chat.entity.User;
 import B2chat.b2chat.service.GitHubService;
 import B2chat.b2chat.service.TwitterService;

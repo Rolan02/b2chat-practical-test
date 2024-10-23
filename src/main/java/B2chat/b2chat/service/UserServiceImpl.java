@@ -1,6 +1,6 @@
 package B2chat.b2chat.service;
 
-import B2chat.b2chat.Utils;
+import B2chat.b2chat.utils.Utils;
 import B2chat.b2chat.entity.User;
 import B2chat.b2chat.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -68,5 +68,14 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException(Utils.EMAIL_DUPLICATE);
         }
+        if (!isValidPassword(user.getPassword())) {
+            throw new IllegalArgumentException(Utils.PASSWORD_WEAK);
+        }
+    }
+    private boolean isValidPassword(String password) {
+        return password != null && password.length() >= 6 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*[0-9].*");
     }
 }
