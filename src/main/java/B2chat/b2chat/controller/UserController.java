@@ -2,6 +2,7 @@ package B2chat.b2chat.controller;
 import B2chat.b2chat.Utils;
 import B2chat.b2chat.entity.User;
 import B2chat.b2chat.service.GitHubService;
+import B2chat.b2chat.service.TwitterService;
 import B2chat.b2chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,9 @@ public class UserController {
 
     @Autowired
     private GitHubService gitHubService;
+
+    @Autowired
+    private TwitterService twitterService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
@@ -68,6 +72,13 @@ public class UserController {
     @GetMapping("/github/{username}")
     public Mono<ResponseEntity<String>> getGitHubUserInfo(@PathVariable String username) {
         return gitHubService.getUserInfo(username)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/twitter/{username}/tweets")
+    public Mono<ResponseEntity<String>> getUserTweets(@PathVariable String username) {
+        return twitterService.getUserTweets(username)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
