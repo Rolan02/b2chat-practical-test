@@ -4,6 +4,8 @@ import B2chat.b2chat.entity.User;
 import B2chat.b2chat.service.GitHubService;
 import B2chat.b2chat.service.TwitterService;
 import B2chat.b2chat.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "Usuarios", description = "Gestión de usuarios")
 @RestController
 @RequestMapping("/b2chat/api/users")
 public class UserController {
@@ -26,6 +29,7 @@ public class UserController {
     @Autowired
     private TwitterService twitterService;
 
+    @Operation(summary = "Crear un nuevo usuario", description = "Crea un nuevo usuario en la base de datos")
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
@@ -36,6 +40,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Obtener usuario por ID", description = "Devuelve un usuario basado en su ID")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
@@ -43,12 +48,14 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Listar todos los usuarios", description = "Devuelve una lista de todos los usuarios")
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Actualizar un usuario", description = "Actualiza los datos de un usuario existente")
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         try {
@@ -59,6 +66,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Eliminar un usuario", description = "Elimina un usuario por su ID")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
