@@ -5,6 +5,7 @@ import B2chat.b2chat.entity.User;
 import B2chat.b2chat.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public User createUser(User user) {
         validUser(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -39,6 +44,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(Utils.USER_NOT_FOUND);
         }
         validUser(updatedUser);
+        updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         updatedUser.setId(id);
         return userRepository.save(updatedUser);
     }
