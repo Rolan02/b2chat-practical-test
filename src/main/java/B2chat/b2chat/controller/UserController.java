@@ -1,11 +1,13 @@
 package B2chat.b2chat.controller;
 import B2chat.b2chat.Utils;
 import B2chat.b2chat.entity.User;
+import B2chat.b2chat.service.GitHubService;
 import B2chat.b2chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GitHubService gitHubService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
@@ -58,5 +63,12 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/github/{username}")
+    public Mono<ResponseEntity<String>> getGitHubUserInfo(@PathVariable String username) {
+        return gitHubService.getUserInfo(username)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }
